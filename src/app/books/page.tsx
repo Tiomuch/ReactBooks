@@ -7,6 +7,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from '@mui/material'
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit'
@@ -45,21 +46,27 @@ export default function Books() {
       >
         Add New
       </Button>
-      <List>
-        {tempList.map(el => (
-          <ListItem disablePadding key={el._id}>
-            <ListItemButton>
-              <ListItemText primary={el.title} />
-              <ListItemIcon onClick={() => onEditClick(el._id)}>
-                <EditIcon style={{ color: 'blue' }} />
-              </ListItemIcon>
-              <ListItemIcon>
-                <DeleteIcon style={{ color: 'red' }} />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      {!!tempList.length ? (
+        <List>
+          {tempList.map(el => (
+            <ListItem disablePadding key={el._id}>
+              <ListItemButton>
+                <ListItemText primary={el.title} />
+                <ListItemIcon onClick={() => onEditClick(el._id)}>
+                  <EditIcon style={{ color: 'blue' }} />
+                </ListItemIcon>
+                <ListItemIcon>
+                  <DeleteIcon style={{ color: 'red' }} />
+                </ListItemIcon>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <Typography textAlign="center" variant="h3" marginBottom="20px">
+          List is empty 🥺. You can add one...
+        </Typography>
+      )}
     </Container>
   )
 }

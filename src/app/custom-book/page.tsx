@@ -1,6 +1,6 @@
 'use client'
 import { Box, Button, Container, IconButton, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -27,6 +27,14 @@ export default function CustomBook() {
   const onTextChange = (event: any) => {
     setText(event.target.value)
   }
+
+  const canBeSaved = useMemo(
+    () =>
+      title.trim().length > 0 &&
+      author.trim().length > 0 &&
+      text.trim().length > 0,
+    [title, author, text],
+  )
 
   useEffect(() => {
     return () => {
@@ -88,6 +96,7 @@ export default function CustomBook() {
           onClick={onSaveClick}
           variant="contained"
           style={{ marginTop: '20px' }}
+          disabled={!canBeSaved}
         >
           Save
         </Button>
