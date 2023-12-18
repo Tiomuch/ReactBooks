@@ -1,21 +1,17 @@
+'use client'
 import {
+  Button,
   Container,
-  FormControl,
-  Input,
-  InputAdornment,
-  InputLabel,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Pagination,
-  PaginationItem,
 } from '@mui/material'
 import React from 'react'
-import SearchIcon from '@mui/icons-material/Search'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { useRouter } from 'next/navigation'
 
 const tempList = [
   { title: 'Test1', _id: '1' },
@@ -23,10 +19,15 @@ const tempList = [
 ]
 
 export default function Books() {
-  // const [page, setPage] = React.useState(1)
-  // const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-  //   setPage(value)
-  // }
+  const router = useRouter()
+
+  const onEditClick = (bookId: string) => {
+    router.push(`/custom-book?id=${bookId}`)
+  }
+
+  const onCreateClick = () => {
+    router.push('/custom-book')
+  }
 
   return (
     <Container
@@ -37,24 +38,19 @@ export default function Books() {
         marginTop: 50,
       }}
     >
-      <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-        <InputLabel htmlFor="standard-adornment-amount">Search</InputLabel>
-        <Input
-          id="standard-adornment-amount"
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-
+      <Button
+        onClick={onCreateClick}
+        variant="contained"
+        style={{ marginTop: '20px' }}
+      >
+        Add New
+      </Button>
       <List>
         {tempList.map(el => (
           <ListItem disablePadding key={el._id}>
             <ListItemButton>
               <ListItemText primary={el.title} />
-              <ListItemIcon>
+              <ListItemIcon onClick={() => onEditClick(el._id)}>
                 <EditIcon style={{ color: 'blue' }} />
               </ListItemIcon>
               <ListItemIcon>
@@ -64,8 +60,6 @@ export default function Books() {
           </ListItem>
         ))}
       </List>
-
-      <Pagination size="large" count={10} hidePrevButton hideNextButton />
     </Container>
   )
 }
