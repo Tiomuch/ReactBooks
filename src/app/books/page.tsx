@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useRouter } from 'next/navigation'
-import { Book, deleteBook, getBooks } from '../api/books'
+import { Book, deleteBook, getBooks } from '../../api/books'
 
 export default function Books() {
   const [books, setBooks] = useState<Book[]>([])
