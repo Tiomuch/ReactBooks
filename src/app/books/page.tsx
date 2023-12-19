@@ -9,26 +9,40 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useRouter } from 'next/navigation'
-
-const tempList = [
-  { title: 'Test1', _id: '1' },
-  { title: 'Test2', _id: '2' },
-]
+import { Book, deleteBook, getBooks } from '../api/books'
 
 export default function Books() {
+  const [books, setBooks] = useState<Book[]>([])
+
   const router = useRouter()
 
   const onEditClick = (bookId: string) => {
     router.push(`/custom-book?id=${bookId}`)
   }
 
+  const onDeleteClick = async (bookId: string) => {
+    await deleteBook(bookId)
+
+    const apiBooks = await getBooks()
+
+    setBooks(apiBooks)
+  }
+
   const onCreateClick = () => {
     router.push('/custom-book')
   }
+
+  useEffect(() => {
+    ;(async () => {
+      const apiBooks = await getBooks()
+
+      setBooks(apiBooks)
+    })()
+  }, [])
 
   return (
     <Container
@@ -46,16 +60,16 @@ export default function Books() {
       >
         Add New
       </Button>
-      {!!tempList.length ? (
+      {!!books.length ? (
         <List>
-          {tempList.map(el => (
+          {books.map(el => (
             <ListItem disablePadding key={el._id}>
               <ListItemButton>
                 <ListItemText primary={el.title} />
-                <ListItemIcon onClick={() => onEditClick(el._id)}>
+                <ListItemIcon onClick={() => onEditClick(el?._id ?? '')}>
                   <EditIcon style={{ color: 'blue' }} />
                 </ListItemIcon>
-                <ListItemIcon>
+                <ListItemIcon onClick={() => onDeleteClick(el?._id ?? '')}>
                   <DeleteIcon style={{ color: 'red' }} />
                 </ListItemIcon>
               </ListItemButton>

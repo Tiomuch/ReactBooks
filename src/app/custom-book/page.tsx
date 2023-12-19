@@ -3,16 +3,25 @@ import { Box, Button, Container, IconButton, TextField } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { createBook, getBookById, updateBook } from '../api/books'
 
 export default function CustomBook() {
   const router = useRouter()
   const query = useSearchParams()
-  // console.log(query.get('id'))
+
   const [title, setTitle] = useState<string>('')
   const [author, setAuthor] = useState<string>('')
   const [text, setText] = useState<string>('')
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
+    const bookId = query.get('id')
+
+    if (!!bookId) {
+      await updateBook({ title, author, text, _id: bookId })
+    } else {
+      await createBook({ title, author, text })
+    }
+
     router.back()
   }
 
@@ -37,12 +46,24 @@ export default function CustomBook() {
   )
 
   useEffect(() => {
+    const bookId = query.get('id')
+
+    if (!!bookId) {
+      ;(async () => {
+        const book = await getBookById(bookId)
+
+        setTitle(book?.title)
+        setAuthor(book?.author)
+        setText(book?.text)
+      })()
+    }
+
     return () => {
       setTitle('')
       setAuthor('')
       setText('')
     }
-  }, [])
+  }, [query])
 
   return (
     <Container
@@ -72,6 +93,7 @@ export default function CustomBook() {
           maxRows={4}
           variant="standard"
           onChange={onTitleChange}
+          value={title}
         />
 
         <TextField
@@ -81,6 +103,7 @@ export default function CustomBook() {
           maxRows={4}
           variant="standard"
           onChange={onAuthorChange}
+          value={author}
         />
 
         <TextField
@@ -90,6 +113,7 @@ export default function CustomBook() {
           maxRows={10}
           variant="standard"
           onChange={onTextChange}
+          value={text}
         />
 
         <Button
